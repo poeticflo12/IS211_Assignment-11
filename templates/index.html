@@ -1,0 +1,111 @@
+
+<style>
+    table{
+        background-color: #FFCCCC;
+        width:100%;
+        padding:20px !important;
+    }
+    th, td{
+        padding:10px 20px !important;
+    }
+    
+    .container-contents{
+        width:90%;
+        margin: 0 auto;
+    }
+    .task{
+        width:600px;
+        margin:0 auto;
+    }
+    .new-task{
+        color:#00C4A7;
+        font-size: 2.0em !important;
+        padding:50px 10px 10px 10px;
+    }
+</style>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="container-contents">
+        <table class="table is-hoverable is-striped">
+            <thead>
+                <th># ID</th>
+                <th>Tasks</th>
+                <th>Email</th>
+                <th>Priority</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                {% for task in todolist%}
+                    <tr>
+                        <td>{{task.id}}</td>
+                        <td>{{task.task}}</td>
+                        <td>{{task.email}}</td>
+                        {% if task.priority == "high" %}
+                        <td style="color: red;">{{task.priority}}</td>
+                        {%elif task.priority == "medium" %}
+                        <td style="color: orange;">{{task.priority}}</td>
+                        {%elif task.priority == "low" %}
+                        <td style="color: green;">{{task.priority}}</td>
+                        {%endif%}
+                        <td><a href="/delete/{{task.id}}">Delete</a></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for error in messages %}
+            <p class="help">
+                {{error}}
+            </p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form action="/submit" method="post">
+        <div class="task">
+            
+            <p class="new-tasks">Create New Task</p>
+            
+            <div class="field">
+                <label class="label">Task</label>
+                <div class="control">
+                    <input class="input" name="task" type="text" placeholder="e.g Go shopping" required>
+                </div>
+            </div>
+                
+            <div class="field">
+                <label class="label">Email</label>
+                <div class="control">
+                    <input class="input" name="email" placeholder="e.g. johndoe@gmail.com">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Priority</label>
+                <div class="control">
+                    <div class="select">
+                        <select name="priority">
+                            <option value="select_priority">Select Priority</option>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="field">
+                <input class="button is-primary" type="submit" value="Add To Do Item" style="margin-top:20px;">
+            </div>
+
+        </div>
+    </form>
+    <form action="/clear" method="post">
+        <input class="button is-warning" type="submit" value="Clear" style="margin-top:20px;">        
+    </form>
+
+        <a href="/save" class="button is-danger">Save</a>
+    
+</div>
+{% endblock %}
